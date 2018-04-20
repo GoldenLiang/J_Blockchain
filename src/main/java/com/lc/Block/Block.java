@@ -6,12 +6,17 @@ import java.time.Instant;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.lc.Pow.PowResult;
+import com.lc.Pow.ProofOfWork;
 import com.lc.Util.ByteUtils;
+
+import lombok.Data;
 
 /**
  * @author lc
  * 区块
  */
+@Data
 public class Block {
 
 	/**
@@ -34,14 +39,20 @@ public class Block {
 	 */
 	private long timeStamp;
 	
+	/**
+	 * 工作量证明计数器
+	 */
+	private long nonce;
+	
 	public Block() {}
 
-	public Block(String hash, String data, String previousHash, long timeStamp) {
+	public Block(String hash, String data, String previousHash, long timeStamp, long nonce) {
 		this();
 		this.hash = hash;
 		this.data = data;
 		this.previousHash = previousHash;
 		this.timeStamp = timeStamp;
+		this.nonce = nonce;
 	}
 
 	/**
@@ -59,8 +70,11 @@ public class Block {
 	 * @return
 	 */
 	public static Block newBlock(String previousHash, String data) {
-		Block block = new Block("",  data, previousHash, Instant.now().getEpochSecond());
-		block.setHash();
+		Block block = new Block("",  data, previousHash, Instant.now().getEpochSecond(), 0);
+		ProofOfWork pow = ProofOfWork.newProofOfWork(block);
+		PowResult powResult = pow.run();
+		block.setHash(powResult.getHash());
+		block.setNonce(powResult.getNonce());
 		return block;
 	}
 
@@ -112,4 +126,13 @@ public class Block {
 	public void setTimeStamp(long timeStamp) {
 		this.timeStamp = timeStamp;
 	}
+
+	public long getNonce() {
+		return nonce;
+	}
+
+	public void setNonce(long nonce) {
+		this.nonce = nonce;
+	}
+	
 }

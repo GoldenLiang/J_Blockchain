@@ -2,6 +2,7 @@ package com.lc.J_Blockchain;
 
 import com.lc.Block.Block;
 import com.lc.Block.Blockchain;
+import com.lc.Pow.ProofOfWork;
 
 /**
  * @author lc
@@ -18,7 +19,10 @@ public class BlockchainTest {
 			System.out.println("Prev.hash: " + block.getPreviousHash());
 			System.out.println("Data: " + block.getData());
             System.out.println("Hash: " + block.getHash());
-            System.out.println();
+            System.out.println("Nonce: " + block.getNonce());
+            
+            ProofOfWork pow = ProofOfWork.newProofOfWork(block);
+            System.out.println("Pow valid: " + pow.validate() + "\n");
 		}
 	}
 }
